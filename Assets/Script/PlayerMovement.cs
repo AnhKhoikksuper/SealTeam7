@@ -20,6 +20,7 @@ public class PlayerMovement2D : MonoBehaviour
 
     private Rigidbody2D rb;
     private Animator anim;
+    private SpriteRenderer sr;
 
     private float moveInput;
     private bool isFacingRight = true;
@@ -31,7 +32,8 @@ public class PlayerMovement2D : MonoBehaviour
     void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
-        anim = GetComponentInChildren<Animator>(); // Animator nằm ở Sprite
+        anim = GetComponentInChildren<Animator>();
+        sr = GetComponentInChildren<SpriteRenderer>(); // 👈 LẤY SPRITE
     }
 
     void Update()
@@ -40,10 +42,9 @@ public class PlayerMovement2D : MonoBehaviour
         moveInput = Input.GetAxisRaw("Horizontal");
 
         // ===== Animation: MoveSpeed =====
-        // Giá trị từ 0 → 1
         anim.SetFloat("MoveSpeed", Mathf.Abs(moveInput));
 
-        // Flip mặt
+        // Flip mặt (ĐÃ FIX)
         HandleFlip();
 
         // Ground check
@@ -73,7 +74,7 @@ public class PlayerMovement2D : MonoBehaviour
             coyoteTimer = 0;
         }
 
-        // Jump cut (nhả sớm → nhảy thấp)
+        // Jump cut
         if (Input.GetKeyUp(KeyCode.Space) && rb.linearVelocity.y > 0)
         {
             rb.linearVelocity = new Vector2(
@@ -92,7 +93,7 @@ public class PlayerMovement2D : MonoBehaviour
     }
 
     // ======================
-    // Flip nhân vật (Y = 0 / 180)
+    // Flip nhân vật (KHÔNG XOAY ROTATION)
     // ======================
     void HandleFlip()
     {
@@ -105,13 +106,13 @@ public class PlayerMovement2D : MonoBehaviour
     void FaceRight()
     {
         isFacingRight = true;
-        transform.rotation = Quaternion.Euler(0f, 0f, 0f);
+        sr.flipX = false; // 👈 quay phải
     }
 
     void FaceLeft()
     {
         isFacingRight = false;
-        transform.rotation = Quaternion.Euler(0f, 180f, 0f);
+        sr.flipX = true; // 👈 quay trái
     }
 
     void OnDrawGizmosSelected()
