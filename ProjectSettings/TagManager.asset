@@ -11,9 +11,15 @@ TagManager:
   - 
   - Water
   - UI
+
   - Ground
   - 
   - 
+
+  - Bg
+  - Obj
+  - Fg
+
   - 
   - 
   - 
@@ -40,6 +46,17 @@ TagManager:
   m_SortingLayers:
   - name: Default
     uniqueID: 0
+    locked: 0
+
+
+  - name: Bg
+    uniqueID: 3914797881
+    locked: 0
+  - name: Obj
+    uniqueID: 3328502537
+    locked: 0
+  - name: Fg
+    uniqueID: 4018614149
     locked: 0
   m_RenderingLayers:
   - Default
