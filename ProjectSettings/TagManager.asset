@@ -12,7 +12,7 @@ TagManager:
   - Water
   - UI
   - Bg
-  - Furniture
+  - Obj
   - Fg
   - 
   - 
@@ -44,7 +44,7 @@ TagManager:
   - name: Bg
     uniqueID: 3914797881
     locked: 0
-  - name: Furniture
+  - name: Obj
     uniqueID: 3328502537
     locked: 0
   - name: Fg
