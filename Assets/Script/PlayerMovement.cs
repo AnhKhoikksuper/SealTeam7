@@ -6,7 +6,7 @@ public class PlayerMovement2D : MonoBehaviour
     public float moveSpeed = 6f;
 
     [Header("Jump")]
-    public float jumpForce = 12f;
+    public float jumpForce = 30f;
     public float jumpCutMultiplier = 0.5f;
 
     [Header("Coyote & Buffer")]
