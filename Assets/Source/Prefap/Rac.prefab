@@ -213,4 +213,3 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   itemName: Item
-  pickupUI: {fileID: 0}
