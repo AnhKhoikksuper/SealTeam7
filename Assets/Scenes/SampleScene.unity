@@ -6320,6 +6320,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   trashPrefab: {fileID: 2507169812369875139, guid: 4beaaedee1b02994fb8ee6644eba23de, type: 3}
   binPrefab: {fileID: 87756832270785048, guid: f8fa59ca05af0654089ea5aebe382ad9, type: 3}
+  player: {fileID: 2054935712}
+  safeDistanceFromPlayer: 5
   trashCount: 7
   trashMinX: -51
   trashMaxX: 51
@@ -6328,6 +6330,8 @@ MonoBehaviour:
   binMinX: -51
   binMaxX: 51
   binY: -15
+  minDistanceBetweenObjects: 3
+  maxAttempts: 15
 --- !u!1 &1338767128
 GameObject:
   m_ObjectHideFlags: 0
