@@ -7786,6 +7786,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 1421780062}
     - target: {fileID: 5380980493058929760, guid: 153054336e61bdb49aab6e1fddabab50, type: 3}
+      propertyPath: timeLimit
+      value: 120
+      objectReference: {fileID: 0}
+    - target: {fileID: 5380980493058929760, guid: 153054336e61bdb49aab6e1fddabab50, type: 3}
       propertyPath: timerText
       value: 
       objectReference: {fileID: 2128985868}
@@ -8030,7 +8034,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2147002092857631079, guid: 6ed7e07395268c849aaa968eabe58456, type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2700462730040418104, guid: 6ed7e07395268c849aaa968eabe58456, type: 3}
       propertyPath: m_IsActive
