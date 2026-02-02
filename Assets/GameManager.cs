@@ -23,8 +23,8 @@ public class GameManager : MonoBehaviour
 
     void Start()
     {
+        Time.timeScale = 1;
         timeLeft = timeLimit;
-
         if (winPanel) winPanel.SetActive(false);
         if (losePanel) losePanel.SetActive(false);
     }
@@ -38,7 +38,7 @@ public class GameManager : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.R))
         {
-            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+            Replay();
         }
     }
 
@@ -47,7 +47,6 @@ public class GameManager : MonoBehaviour
         timeLeft -= Time.deltaTime;
         timeLeft = Mathf.Max(timeLeft, 0);
 
-        // ⭐ Convert sang MM:SS
         int minutes = Mathf.FloorToInt(timeLeft / 60);
         int seconds = Mathf.FloorToInt(timeLeft % 60);
 
@@ -78,6 +77,29 @@ public class GameManager : MonoBehaviour
     {
         gameEnded = true;
         if (losePanel) losePanel.SetActive(true);
+        Time.timeScale = 0;
         Debug.Log("💀 LOSE");
+    }
+
+    // =========================
+    // ⭐ HÀM MỚI
+    // =========================
+
+    // Chơi lại
+    public void Replay()
+    {
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+    }
+
+    // Sang màn tiếp theo
+    public void LoadNextLevel()
+    {
+        int nextScene = SceneManager.GetActiveScene().buildIndex + 1;
+
+        // tránh vượt quá số scene trong build
+        if (nextScene < SceneManager.sceneCountInBuildSettings)
+            SceneManager.LoadScene(nextScene);
+        else
+            Debug.Log("🚫 Không còn màn tiếp theo");
     }
 }
