@@ -29,16 +29,32 @@ public class LevelManager : MonoBehaviour
         targetProgress = target;
         rewardGold = reward;
 
-        UIManager.Instance.UpdateScore(currentProgress, targetProgress);
+        Debug.Log("📜 Quest bắt đầu");
+
+        if (UIManager.Instance != null)
+            UIManager.Instance.UpdateScore(currentProgress, targetProgress);
     }
 
     // TrashBin gọi khi bỏ rác
     public void AddProgress(int amount)
     {
-        if (!questActive || questCompleted) return;
+        if (!questActive)
+        {
+            Debug.Log("⚠️ Quest chưa kích hoạt");
+            return;
+        }
+
+        if (questCompleted) return;
 
         currentProgress += amount;
-        UIManager.Instance.UpdateScore(currentProgress, targetProgress);
+
+        // Không cho vượt quá target
+        currentProgress = Mathf.Clamp(currentProgress, 0, targetProgress);
+
+        Debug.Log($"🧮 Progress: {currentProgress}/{targetProgress}");
+
+        if (UIManager.Instance != null)
+            UIManager.Instance.UpdateScore(currentProgress, targetProgress);
 
         if (currentProgress >= targetProgress)
         {
@@ -48,16 +64,20 @@ public class LevelManager : MonoBehaviour
 
     void CompleteQuest()
     {
+        if (questCompleted) return;
+
         questCompleted = true;
         questActive = false;
 
-        Inventory.Instance.AddGold(rewardGold);
-        UIManager.Instance.ShowQuestComplete();
+        if (Inventory.Instance != null)
+            Inventory.Instance.AddGold(rewardGold);
+
+        if (UIManager.Instance != null)
+            UIManager.Instance.ShowQuestComplete();
 
         Debug.Log("✅ Hoàn thành nhiệm vụ");
     }
 
-    // NPC hỏi xem quest xong chưa
     public bool IsQuestCompleted()
     {
         return questCompleted;

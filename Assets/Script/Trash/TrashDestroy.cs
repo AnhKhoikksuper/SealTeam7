@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class ItemDestroy : MonoBehaviour
+public class TrashDestroy : MonoBehaviour
 {
     public float destroyY = -6f;
 
