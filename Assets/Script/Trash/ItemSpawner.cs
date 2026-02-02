@@ -1,108 +1,84 @@
 using UnityEngine;
-using System.Collections.Generic;
 
-public class TrashSpawner : MonoBehaviour
+public class ItemSpawner : MonoBehaviour
 {
     [Header("Prefabs")]
     public GameObject trashPrefab;
     public GameObject binPrefab;
 
-    [Header("Player")]
-    public Transform player;
-    public float safeDistanceFromPlayer = 3f;
-
-    [Header("Trash Spawn Settings")]
-    public int trashCount = 10;
-    public float trashMinX = 0f;
-    public float trashMaxX = 20f;
-    public float trashY = -2.5f;
-
-    [Header("Bin Spawn Settings")]
+    [Header("Bin Settings")]
     public int binCount = 2;
-    public float binMinX = 0f;
-    public float binMaxX = 20f;
-    public float binY = -2.5f;
 
-    [Header("Spawn Safety")]
-    public float minDistanceBetweenObjects = 2f;
-    public int maxAttempts = 30;
+    [Header("Spawn Range X")]
+    public float minX = 0f;
+    public float maxX = 20f;
 
-    private List<Vector2> usedPositions = new List<Vector2>();
+    [Header("Ground")]
+    public LayerMask groundLayer;
+    public float yOffset = 0.3f;
+
+    public Transform player;
+    public float minDistanceFromPlayer = 3f;
 
     void Start()
     {
-        SpawnTrash();
+        SpawnTrashFromLevel();
         SpawnBins();
-        SyncQuestWithSpawn();
+
+        if (LevelManager.Instance != null)
+            LevelManager.Instance.ResetScore();
     }
 
-    // 🗑️ Spawn rác
-    void SpawnTrash()
+    // ⭐ Lấy số rác từ LevelManager
+    void SpawnTrashFromLevel()
     {
+        if (LevelManager.Instance == null) return;
+
+        int trashCount = LevelManager.Instance.trashToSpawn;
+
         for (int i = 0; i < trashCount; i++)
         {
-            Vector2 pos = GetValidPosition(trashMinX, trashMaxX, trashY);
-
+            Vector2 pos = GetGroundPos();
             Instantiate(trashPrefab, pos, Quaternion.identity);
-            usedPositions.Add(pos);
-
-            Debug.Log("🗑️ Trash at: " + pos);
         }
+
+        Debug.Log($"🗑️ Spawned {trashCount} trash");
     }
 
-    // 🧺 Spawn thùng rác
     void SpawnBins()
     {
         for (int i = 0; i < binCount; i++)
         {
-            Vector2 pos = GetValidPosition(binMinX, binMaxX, binY);
-
+            Vector2 pos = GetGroundPos();
             Instantiate(binPrefab, pos, Quaternion.identity);
-            usedPositions.Add(pos);
-
-            Debug.Log("🧺 Bin at: " + pos);
         }
+
+        Debug.Log($"🧺 Spawned {binCount} bins");
     }
 
-    // 📍 Tìm vị trí hợp lệ
-    Vector2 GetValidPosition(float minX, float maxX, float y)
+    Vector2 GetGroundPos()
     {
-        for (int attempt = 0; attempt < maxAttempts; attempt++)
+        for (int i = 0; i < 30; i++)
         {
             float x = Random.Range(minX, maxX);
-            Vector2 candidate = new Vector2(x, y);
 
-            // ❌ Gần player
-            if (player != null &&
-                Vector2.Distance(candidate, player.position) < safeDistanceFromPlayer)
+            RaycastHit2D hit = Physics2D.Raycast(
+                new Vector2(x, 50),
+                Vector2.down,
+                100,
+                groundLayer
+            );
+
+            if (!hit) continue;
+
+            Vector2 pos = hit.point + Vector2.up * yOffset;
+
+            if (Vector2.Distance(pos, player.position) < minDistanceFromPlayer)
                 continue;
 
-            // ❌ Gần object khác
-            bool tooClose = false;
-            foreach (var pos in usedPositions)
-            {
-                if (Vector2.Distance(candidate, pos) < minDistanceBetweenObjects)
-                {
-                    tooClose = true;
-                    break;
-                }
-            }
-
-            if (!tooClose)
-                return candidate;
+            return pos;
         }
 
-        // fallback nếu quá nhiều lần fail
-        return new Vector2(Random.Range(minX, maxX), y);
-    }
-
-    // 📊 Sync quest
-    void SyncQuestWithSpawn()
-    {
-        if (LevelManager.Instance == null) return;
-
-        LevelManager.Instance.StartQuest(trashCount, LevelManager.Instance.rewardGold);
-
-        Debug.Log($"📊 Quest synced: 0/{trashCount}");
+        return Vector2.zero;
     }
 }
