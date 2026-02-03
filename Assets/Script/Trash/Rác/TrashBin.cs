@@ -101,9 +101,6 @@ public class TrashBin : MonoBehaviour
         trashDown.transform.localPosition = originalPos;
         trashDown.SetActive(false);
     }
-
-
-
     void ResetCooldown()
     {
         cooldown = false;

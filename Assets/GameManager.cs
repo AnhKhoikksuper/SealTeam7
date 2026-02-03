@@ -1,7 +1,9 @@
 using UnityEngine;
 using TMPro;
 using UnityEngine.SceneManagement;
+using System.Collections;
 
+[RequireComponent(typeof(AudioSource))]
 public class GameManager : MonoBehaviour
 {
     public static GameManager Instance;
@@ -15,33 +17,65 @@ public class GameManager : MonoBehaviour
     public TextMeshProUGUI timerText;
     public GameObject winPanel;
     public GameObject losePanel;
+    public GameObject pausePanel;
+
+    private bool canPressKey = false;
+    private bool isPaused = false;
+
+    [Header("Audio")]
+    public AudioClip bgm;
+    private AudioSource audioSource;
 
     void Awake()
     {
         Instance = this;
+        audioSource = GetComponent<AudioSource>();
     }
 
     void Start()
     {
         Time.timeScale = 1;
         timeLeft = timeLimit;
+
         if (winPanel) winPanel.SetActive(false);
         if (losePanel) losePanel.SetActive(false);
+        if (pausePanel) pausePanel.SetActive(false);
+
+        PlayBGM();
     }
 
     void Update()
     {
-        if (gameEnded) return;
-
-        RunTimer();
-        CheckWin();
-
-        if (Input.GetKeyDown(KeyCode.R))
+        // ESC Pause (chỉ khi chưa kết thúc game)
+        if (!gameEnded && Input.GetKeyDown(KeyCode.Escape))
         {
-            Replay();
+            TogglePause();
         }
+
+        if (!gameEnded && !isPaused)
+        {
+            RunTimer();
+            CheckWin();
+        }
+
+        HandleInput();
     }
 
+    // ======================
+    // 🎵 BGM
+    // ======================
+    void PlayBGM()
+    {
+        if (bgm == null) return;
+
+        audioSource.clip = bgm;
+        audioSource.loop = true;
+        audioSource.Play();
+    }
+
+    // ======================
+    // ⏱ TIMER
+    // ======================
     void RunTimer()
     {
         timeLeft -= Time.deltaTime;
@@ -57,6 +91,9 @@ public class GameManager : MonoBehaviour
             Lose();
     }
 
+    // ======================
+    // 🏆 CHECK WIN
+    // ======================
     void CheckWin()
     {
         if (LevelManager.Instance.currentScore >=
@@ -66,40 +103,122 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    // ======================
+    // 🏆 WIN
+    // ======================
     public void Win()
     {
+        if (gameEnded) return;
+
         gameEnded = true;
+
         if (winPanel) winPanel.SetActive(true);
-        Debug.Log("🏆 WIN");
+
+        StartCoroutine(WinDelay());
     }
 
+    IEnumerator WinDelay()
+    {
+        canPressKey = false;
+        yield return new WaitForSeconds(1f);
+        canPressKey = true;
+    }
+
+    // ======================
+    // 💀 LOSE
+    // ======================
     public void Lose()
     {
+        if (gameEnded) return;
+
         gameEnded = true;
+
         if (losePanel) losePanel.SetActive(true);
+
         Time.timeScale = 0;
-        Debug.Log("💀 LOSE");
     }
 
-    // =========================
-    // ⭐ HÀM MỚI
-    // =========================
+    // ======================
+    // ⏸ PAUSE
+    // ======================
+    void TogglePause()
+    {
+        isPaused = !isPaused;
 
-    // Chơi lại
+        if (pausePanel) pausePanel.SetActive(isPaused);
+
+        Time.timeScale = isPaused ? 0 : 1;
+    }
+
+
+    // ======================
+    // 🎮 INPUT
+    // ======================
+    void HandleInput()
+    {
+        // ===== PAUSE INPUT =====
+        if (isPaused && pausePanel.activeSelf)
+        {
+            if (Input.GetKeyDown(KeyCode.Return))
+            {
+                TogglePause(); // resume
+            }
+
+            if (Input.GetKeyDown(KeyCode.Backspace))
+            {
+                Time.timeScale = 1;
+                SceneManager.LoadScene("Menu");
+            }
+
+            return;
+        }
+
+        if (!gameEnded) return;
+
+        // ===== WIN INPUT =====
+        if (winPanel.activeSelf && canPressKey)
+        {
+            if (Input.GetKeyDown(KeyCode.Return))
+                LoadNextLevel();
+
+            if (Input.GetKeyDown(KeyCode.Backspace))
+                SceneManager.LoadScene("Menu");
+        }
+
+        // ===== LOSE INPUT =====
+        if (losePanel.activeSelf)
+        {
+            if (Input.GetKeyDown(KeyCode.R))
+            {
+                Replay();
+            }
+
+            if (Input.GetKeyDown(KeyCode.Backspace))
+            {
+                Time.timeScale = 1;
+                SceneManager.LoadScene("Menu");
+            }
+        }
+
+    }
+
+
+    // ======================
+    // 🔁 SCENE CONTROL
+    // ======================
     public void Replay()
     {
+        Time.timeScale = 1;
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
 
-    // Sang màn tiếp theo
     public void LoadNextLevel()
     {
+        Time.timeScale = 1;
+
         int nextScene = SceneManager.GetActiveScene().buildIndex + 1;
 
-        // tránh vượt quá số scene trong build
         if (nextScene < SceneManager.sceneCountInBuildSettings)
             SceneManager.LoadScene(nextScene);
-        else
-            Debug.Log("🚫 Không còn màn tiếp theo");
     }
 }

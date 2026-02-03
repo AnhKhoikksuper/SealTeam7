@@ -20,33 +20,28 @@ public class ItemSpawner : MonoBehaviour
 
     [Header("Distance Rules")]
     public float minDistanceFromPlayer = 3f;
-    public float minDistanceBetweenSpawns = 2f; // ⭐ chống chồng
+    public float minDistanceBetweenSpawns = 2f;
 
     public Transform player;
 
-    // ⭐ lưu vị trí đã spawn
-    private List<Vector2> usedPositions = new List<Vector2>();
+    List<Vector2> usedPositions = new List<Vector2>();
 
-    void Start()
+    // ⭐ NPC gọi hàm này
+    public void SpawnAll()
     {
-        SpawnTrashFromLevel();
-        SpawnBins();
+        usedPositions.Clear();
 
-        if (LevelManager.Instance != null)
-            LevelManager.Instance.ResetScore();
+        SpawnTrash();
+        SpawnBins();
     }
 
-    // =======================
-
-    void SpawnTrashFromLevel()
+    void SpawnTrash()
     {
-        if (LevelManager.Instance == null) return;
-
         int trashCount = LevelManager.Instance.trashToSpawn;
 
         for (int i = 0; i < trashCount; i++)
         {
-            Vector2 pos = GetValidGroundPos();
+            Vector2 pos = GetValidPos();
 
             if (pos != Vector2.zero)
             {
@@ -62,7 +57,7 @@ public class ItemSpawner : MonoBehaviour
     {
         for (int i = 0; i < binCount; i++)
         {
-            Vector2 pos = GetValidGroundPos();
+            Vector2 pos = GetValidPos();
 
             if (pos != Vector2.zero)
             {
@@ -74,9 +69,7 @@ public class ItemSpawner : MonoBehaviour
         Debug.Log($"🧺 Spawned {binCount} bins");
     }
 
-    // =======================
-
-    Vector2 GetValidGroundPos()
+    Vector2 GetValidPos()
     {
         for (int i = 0; i < 50; i++)
         {
@@ -93,15 +86,14 @@ public class ItemSpawner : MonoBehaviour
 
             Vector2 pos = hit.point + Vector2.up * yOffset;
 
-            // ❌ gần Player
-            if (Vector2.Distance(pos, player.position) < minDistanceFromPlayer)
+            if (player &&
+                Vector2.Distance(pos, player.position) < minDistanceFromPlayer)
                 continue;
 
-            // ❌ gần spawn khác
             bool tooClose = false;
-            foreach (var used in usedPositions)
+            foreach (var p in usedPositions)
             {
-                if (Vector2.Distance(pos, used) < minDistanceBetweenSpawns)
+                if (Vector2.Distance(pos, p) < minDistanceBetweenSpawns)
                 {
                     tooClose = true;
                     break;
@@ -113,7 +105,6 @@ public class ItemSpawner : MonoBehaviour
             return pos;
         }
 
-        Debug.LogWarning("⚠️ Không tìm được vị trí spawn hợp lệ");
         return Vector2.zero;
     }
 }

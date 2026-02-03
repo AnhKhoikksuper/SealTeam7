@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class PlayerMovement2D : MonoBehaviour
+public class PlayerMovement : MonoBehaviour
 {
     [Header("Movement")]
     public float moveSpeed = 6f;
@@ -17,6 +17,16 @@ public class PlayerMovement2D : MonoBehaviour
     public Transform groundCheck;
     public float groundCheckRadius = 0.15f;
     public LayerMask groundLayer;
+    [Header("Audio")]
+    public AudioClip footstepClip;
+    public float footstepInterval = 0.4f;
+    public AudioClip jumpClip;
+    private AudioSource audioSource;
+    private float footstepTimer;
+
+
+    [Header("Control")]
+    public bool canControl = true; // ⭐ BIẾN KHÓA ĐIỀU KHIỂN
 
     private Rigidbody2D rb;
     private Animator anim;
@@ -33,18 +43,27 @@ public class PlayerMovement2D : MonoBehaviour
     {
         rb = GetComponent<Rigidbody2D>();
         anim = GetComponentInChildren<Animator>();
-        sr = GetComponentInChildren<SpriteRenderer>(); // 👈 LẤY SPRITE
+        sr = GetComponentInChildren<SpriteRenderer>();
+        audioSource = GetComponent<AudioSource>();
     }
+
 
     void Update()
     {
+        // ❌ Nếu bị khóa điều khiển
+        if (!canControl)
+        {
+            moveInput = 0;
+            anim.SetFloat("MoveSpeed", 0);
+            return;
+        }
+
         // Input
         moveInput = Input.GetAxisRaw("Horizontal");
 
-        // ===== Animation: MoveSpeed =====
+        // Animation
         anim.SetFloat("MoveSpeed", Mathf.Abs(moveInput));
 
-        // Flip mặt (ĐÃ FIX)
         HandleFlip();
 
         // Ground check
@@ -70,9 +89,15 @@ public class PlayerMovement2D : MonoBehaviour
         if (jumpBufferTimer > 0 && coyoteTimer > 0)
         {
             rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpForce);
+
+            // ⭐ PHÁT ÂM THANH NHẢY
+            if (jumpClip != null)
+                audioSource.PlayOneShot(jumpClip);
+
             jumpBufferTimer = 0;
             coyoteTimer = 0;
         }
+
 
         // Jump cut
         if (Input.GetKeyUp(KeyCode.Space) && rb.linearVelocity.y > 0)
@@ -82,19 +107,24 @@ public class PlayerMovement2D : MonoBehaviour
                 rb.linearVelocity.y * jumpCutMultiplier
             );
         }
+        HandleFootstepSound();
+
     }
 
     void FixedUpdate()
     {
+        if (!canControl)
+        {
+            rb.linearVelocity = new Vector2(0, rb.linearVelocity.y);
+            return;
+        }
+
         rb.linearVelocity = new Vector2(
             moveInput * moveSpeed,
             rb.linearVelocity.y
         );
     }
 
-    // ======================
-    // Flip nhân vật (KHÔNG XOAY ROTATION)
-    // ======================
     void HandleFlip()
     {
         if (moveInput > 0 && !isFacingRight)
@@ -106,13 +136,13 @@ public class PlayerMovement2D : MonoBehaviour
     void FaceRight()
     {
         isFacingRight = true;
-        sr.flipX = false; // 👈 quay phải
+        sr.flipX = false;
     }
 
     void FaceLeft()
     {
         isFacingRight = false;
-        sr.flipX = true; // 👈 quay trái
+        sr.flipX = true;
     }
 
     void OnDrawGizmosSelected()
@@ -121,4 +151,23 @@ public class PlayerMovement2D : MonoBehaviour
         Gizmos.color = Color.green;
         Gizmos.DrawWireSphere(groundCheck.position, groundCheckRadius);
     }
+    void HandleFootstepSound()
+    {
+        if (!isGrounded || Mathf.Abs(moveInput) < 0.1f)
+        {
+            footstepTimer = 0;
+            return;
+        }
+
+        footstepTimer -= Time.deltaTime;
+
+        if (footstepTimer <= 0)
+        {
+            if (footstepClip != null)
+                audioSource.PlayOneShot(footstepClip);
+
+            footstepTimer = footstepInterval;
+        }
+    }
+
 }
