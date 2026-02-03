@@ -16,7 +16,7 @@ GameObject:
   - component: {fileID: 1999085414238713426}
   - component: {fileID: 4546447950820862096}
   m_Layer: 0
-  m_Name: Item
+  m_Name: Trash
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -179,7 +179,7 @@ BoxCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: 0, y: -0.25230575}
+  m_Offset: {x: 0.0614807, y: -0.1785196}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
@@ -189,7 +189,7 @@ BoxCollider2D:
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Size: {x: 2.77, y: 1.9953885}
+  m_Size: {x: 0.8024088, y: 1.8478165}
   m_EdgeRadius: 0
 --- !u!58 &4546447950820862096
 CircleCollider2D:

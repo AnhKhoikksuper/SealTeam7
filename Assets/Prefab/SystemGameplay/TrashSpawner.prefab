@@ -52,6 +52,8 @@ MonoBehaviour:
   groundLayer:
     serializedVersion: 2
     m_Bits: 64
-  yOffset: 0.3
+  yOffset: 1
+  minDistanceFromCharacter: 3
+  minDistanceBetweenSpawns: 2
   player: {fileID: 0}
-  minDistanceFromPlayer: 3
+  NPC: {fileID: 0}

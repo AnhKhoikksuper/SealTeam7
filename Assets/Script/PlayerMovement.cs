@@ -8,7 +8,7 @@ public class PlayerMovement : MonoBehaviour
     [Header("Jump")]
     public float jumpForce = 30f;
     public float jumpCutMultiplier = 0.5f;
-
+    public float maxFallSpeed = -25f;
     [Header("Coyote & Buffer")]
     public float coyoteTime = 0.15f;
     public float jumpBufferTime = 0.15f;
@@ -118,7 +118,11 @@ public class PlayerMovement : MonoBehaviour
             rb.linearVelocity = new Vector2(0, rb.linearVelocity.y);
             return;
         }
-
+        if (rb.linearVelocity.y < maxFallSpeed)
+            rb.linearVelocity = new Vector2(
+                rb.linearVelocity.x,
+                maxFallSpeed
+            );
         rb.linearVelocity = new Vector2(
             moveInput * moveSpeed,
             rb.linearVelocity.y

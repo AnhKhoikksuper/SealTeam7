@@ -5,8 +5,8 @@ using System.Collections;
 public class NPCQuest : MonoBehaviour
 {
     [Header("Refs")]
-    public GameObject gameplayUI;
-    public GameObject timerObject;
+    public GameObject canvasPlayer;
+    public GameManager gameManger;
     [Header("Player")]
     public PlayerMovement playerMovement;
     [Header("Camera")]
@@ -39,8 +39,7 @@ public class NPCQuest : MonoBehaviour
 
     void Start()
     {
-        gameplayUI.SetActive(false);
-        timerObject.SetActive(false);
+        canvasPlayer.SetActive(false);
         spawner = FindFirstObjectByType<ItemSpawner>();
 
         camOriginalPos = cam.transform.position;
@@ -71,8 +70,8 @@ public class NPCQuest : MonoBehaviour
 
     IEnumerator QuestSequence(Transform player)
     {
-        gameplayUI.SetActive(false);
-        timerObject.SetActive(false);
+        canvasPlayer.SetActive(false);
+        gameManger.isRunTimer = false;
         playerMovement.canControl = false;
 
         dialoguePanel.SetActive(true);
@@ -92,7 +91,7 @@ public class NPCQuest : MonoBehaviour
 
         // ⭐ Hội thoại gộp 1 lần
         string fullDialogue =
-            "Này! Thành phố đang cần bạn!\n\n" +
+            "Này! Anh Hùng Nhặt Rác!\n" +
             $"- Có {trashCount} rác đang nằm rải rác.\n" +
             $"- Có {binCount} thùng rác hỗ trợ bạn.\n" +
             "- Nhặt rác và bỏ đúng thùng!\n" +
@@ -106,7 +105,7 @@ public class NPCQuest : MonoBehaviour
 
         dialogueDone = true;
         startText.gameObject.SetActive(true);
-        startText.text = "Nhấn Enter để bắt đầu";
+        startText.text = "Nhấn [Space] để bắt đầu";
     }
 
 
@@ -116,9 +115,12 @@ public class NPCQuest : MonoBehaviour
     {
         if (!playerInside || !dialogueDone || questStarted) return;
 
-        if (Input.GetKeyDown(KeyCode.Return))
-            BeginGame();
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            Invoke(nameof(BeginGame), 0.2f); // delay 1 giây
+        }
     }
+
 
     void BeginGame()
     {
@@ -129,8 +131,8 @@ public class NPCQuest : MonoBehaviour
         spawner.binCount = binCount;
         spawner.SpawnAll();
 
-        gameplayUI.SetActive(true);
-        timerObject.SetActive(true);
+        canvasPlayer.SetActive(true);
+        gameManger.isRunTimer = true;
 
         // ⭐ chuyển lại camera chính
         zoomCam.gameObject.SetActive(false);
@@ -146,25 +148,6 @@ public class NPCQuest : MonoBehaviour
         dialogueText.text = "";
         startText.gameObject.SetActive(false);
     }
-
-    IEnumerator TypeLine(string line)
-    {
-        dialogueText.text = "";
-
-        foreach (char c in line)
-        {
-            // ⭐ Nếu nhấn Space → hiện full câu
-            if (Input.GetKeyDown(KeyCode.Space))
-            {
-                dialogueText.text = line;
-                yield break;
-            }
-
-            dialogueText.text += c;
-        }
-    }
-
-
     IEnumerator Zoom()
     {
         float t = 0;
@@ -180,6 +163,4 @@ public class NPCQuest : MonoBehaviour
             yield return null;
         }
     }
-
-
 }

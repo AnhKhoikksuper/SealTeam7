@@ -12,7 +12,7 @@ public class GameManager : MonoBehaviour
     public float timeLimit = 120f;
     private float timeLeft;
     private bool gameEnded = false;
-
+    public bool isRunTimer;
     [Header("UI")]
     public TextMeshProUGUI timerText;
     public GameObject winPanel;
@@ -36,7 +36,7 @@ public class GameManager : MonoBehaviour
     {
         Time.timeScale = 1;
         timeLeft = timeLimit;
-
+        isRunTimer = false;
         if (winPanel) winPanel.SetActive(false);
         if (losePanel) losePanel.SetActive(false);
         if (pausePanel) pausePanel.SetActive(false);
@@ -52,7 +52,7 @@ public class GameManager : MonoBehaviour
             TogglePause();
         }
 
-        if (!gameEnded && !isPaused)
+        if (!gameEnded && !isPaused && isRunTimer)
         {
             RunTimer();
             CheckWin();
@@ -163,7 +163,10 @@ public class GameManager : MonoBehaviour
             {
                 TogglePause(); // resume
             }
-
+            if (Input.GetKeyDown(KeyCode.R))
+            {
+                Replay();
+            }
             if (Input.GetKeyDown(KeyCode.Backspace))
             {
                 Time.timeScale = 1;
@@ -183,6 +186,10 @@ public class GameManager : MonoBehaviour
 
             if (Input.GetKeyDown(KeyCode.Backspace))
                 SceneManager.LoadScene("Menu");
+            if (Input.GetKeyDown(KeyCode.R))
+            {
+                Replay();
+            }
         }
 
         // ===== LOSE INPUT =====

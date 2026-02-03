@@ -127,12 +127,13 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7081462503655388245}
+  - component: {fileID: 1753762447663502651}
+  - component: {fileID: 2261937939334804624}
+  - component: {fileID: 2802240791350908941}
   - component: {fileID: 8716406737283380382}
   - component: {fileID: 3191505009496922917}
-  - component: {fileID: 6513690711309903078}
-  - component: {fileID: 1753762447663502651}
   - component: {fileID: 8199822233790873707}
-  - component: {fileID: 2802240791350908941}
+  - component: {fileID: 6513690711309903078}
   - component: {fileID: 3640379100496695394}
   - component: {fileID: 8084656029830462872}
   - component: {fileID: 3945468217236603280}
@@ -160,6 +161,63 @@ Transform:
   - {fileID: 7029619282285427626}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1753762447663502651
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6661681652776942939}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8e8ad73b055ab5a488db30aceec100ed, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  moveSpeed: 6
+  jumpForce: 15
+  jumpCutMultiplier: 0.5
+  maxFallSpeed: -15
+  coyoteTime: 0.15
+  jumpBufferTime: 0.15
+  groundCheck: {fileID: 450770467102829171}
+  groundCheckRadius: 0.05
+  groundLayer:
+    serializedVersion: 2
+    m_Bits: 64
+  footstepClip: {fileID: 8300000, guid: a6d95b290f1ed6d49bbdb2073ee55a2c, type: 3}
+  footstepInterval: 0.4
+  jumpClip: {fileID: 8300000, guid: d6bc38df687074247a244665d78f69f4, type: 3}
+  canControl: 1
+--- !u!114 &2261937939334804624
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6661681652776942939}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5cb44580b1044714d8b87c2b47c7837c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  deathLayer:
+    serializedVersion: 2
+    m_Bits: 256
+--- !u!114 &2802240791350908941
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6661681652776942939}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 71011d0501b7c794b928b4b319c69b86, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  holdTrash: {fileID: 3361089533220060926}
+  itemPickupSound: {fileID: 8300000, guid: cab84d840dfbc9941a585ccd4f86d963, type: 3}
+  isHoldingTrash: 0
 --- !u!212 &8716406737283380382
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -237,59 +295,6 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
---- !u!50 &6513690711309903078
-Rigidbody2D:
-  serializedVersion: 5
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6661681652776942939}
-  m_BodyType: 0
-  m_Simulated: 1
-  m_UseFullKinematicContacts: 0
-  m_UseAutoMass: 1
-  m_Mass: 1.2098399
-  m_LinearDamping: 0
-  m_AngularDamping: 0.05
-  m_GravityScale: 5
-  m_Material: {fileID: 6200000, guid: e269b34ce2c086f4c86e9fa84e59d6e6, type: 2}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_Interpolate: 0
-  m_SleepingMode: 1
-  m_CollisionDetection: 0
-  m_Constraints: 4
---- !u!114 &1753762447663502651
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6661681652776942939}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8e8ad73b055ab5a488db30aceec100ed, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  moveSpeed: 6
-  jumpForce: 15
-  jumpCutMultiplier: 0.5
-  coyoteTime: 0.15
-  jumpBufferTime: 0.15
-  groundCheck: {fileID: 450770467102829171}
-  groundCheckRadius: 0.05
-  groundLayer:
-    serializedVersion: 2
-    m_Bits: 64
-  footstepClip: {fileID: 8300000, guid: a6d95b290f1ed6d49bbdb2073ee55a2c, type: 3}
-  footstepInterval: 0.4
-  jumpClip: {fileID: 8300000, guid: d6bc38df687074247a244665d78f69f4, type: 3}
-  canControl: 1
 --- !u!61 &8199822233790873707
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -336,21 +341,33 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 0.9375, y: 1.290496}
   m_EdgeRadius: 0
---- !u!114 &2802240791350908941
-MonoBehaviour:
+--- !u!50 &6513690711309903078
+Rigidbody2D:
+  serializedVersion: 5
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6661681652776942939}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 71011d0501b7c794b928b4b319c69b86, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  holdTrash: {fileID: 3361089533220060926}
-  itemPickupSound: {fileID: 8300000, guid: cab84d840dfbc9941a585ccd4f86d963, type: 3}
-  isHoldingTrash: 0
+  m_BodyType: 0
+  m_Simulated: 1
+  m_UseFullKinematicContacts: 0
+  m_UseAutoMass: 1
+  m_Mass: 1.2098399
+  m_LinearDamping: 0
+  m_AngularDamping: 0.05
+  m_GravityScale: 5
+  m_Material: {fileID: 6200000, guid: e269b34ce2c086f4c86e9fa84e59d6e6, type: 2}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_Interpolate: 0
+  m_SleepingMode: 1
+  m_CollisionDetection: 1
+  m_Constraints: 4
 --- !u!82 &3640379100496695394
 AudioSource:
   m_ObjectHideFlags: 0

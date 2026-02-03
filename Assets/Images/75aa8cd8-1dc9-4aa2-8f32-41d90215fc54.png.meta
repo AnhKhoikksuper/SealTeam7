@@ -251,9 +251,9 @@ TextureImporter:
       name: 75aa8cd8-1dc9-4aa2-8f32-41d90215fc54_0
       rect:
         serializedVersion: 2
-        x: 187
+        x: 186
         y: 314
-        width: 265
+        width: 280
         height: 326
       alignment: 7
       pivot: {x: 0.5, y: 0}
@@ -273,9 +273,9 @@ TextureImporter:
       name: 75aa8cd8-1dc9-4aa2-8f32-41d90215fc54_1
       rect:
         serializedVersion: 2
-        x: 479
-        y: 312
-        width: 272
+        x: 473
+        y: 314
+        width: 279
         height: 331
       alignment: 7
       pivot: {x: 0.5, y: 0}
@@ -297,7 +297,7 @@ TextureImporter:
         serializedVersion: 2
         x: 768
         y: 314
-        width: 278
+        width: 279
         height: 326
       alignment: 7
       pivot: {x: 0.5, y: 0}
@@ -317,9 +317,9 @@ TextureImporter:
       name: 75aa8cd8-1dc9-4aa2-8f32-41d90215fc54_3
       rect:
         serializedVersion: 2
-        x: 1048
+        x: 1063
         y: 315
-        width: 261
+        width: 302
         height: 325
       alignment: 7
       pivot: {x: 0.5, y: 0}
@@ -353,6 +353,7 @@ TextureImporter:
       75aa8cd8-1dc9-4aa2-8f32-41d90215fc54_1: -2254753853533085046
       75aa8cd8-1dc9-4aa2-8f32-41d90215fc54_2: 7593330888048844795
       75aa8cd8-1dc9-4aa2-8f32-41d90215fc54_3: 1721712089437355935
+      75aa8cd8-1dc9-4aa2-8f32-41d90215fc54_4: 1265750775
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
