@@ -92,8 +92,8 @@ public class NPCQuest : MonoBehaviour
         // ⭐ Hội thoại gộp 1 lần
         string fullDialogue =
             "Này! Anh Hùng Nhặt Rác!\n" +
-            $"- Có {trashCount} rác đang nằm rải rác.\n" +
-            $"- Có {binCount} thùng rác hỗ trợ bạn.\n" +
+            $"- Có khoảng {trashCount} rác đang nằm rải rác.\n" +
+            $"- Có khoảng {binCount} thùng rác hỗ trợ bạn.\n" +
             "- Nhặt rác và bỏ đúng thùng!\n" +
             "- Hoàn thành trước khi hết giờ!\n";
 
