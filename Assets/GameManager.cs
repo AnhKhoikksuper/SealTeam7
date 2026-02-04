@@ -2,6 +2,7 @@ using UnityEngine;
 using TMPro;
 using UnityEngine.SceneManagement;
 using System.Collections;
+using System.Collections.Generic;
 
 [RequireComponent(typeof(AudioSource))]
 public class GameManager : MonoBehaviour
@@ -13,6 +14,7 @@ public class GameManager : MonoBehaviour
     private float timeLeft;
     private bool gameEnded = false;
     public bool isRunTimer;
+
     [Header("UI")]
     public TextMeshProUGUI timerText;
     public GameObject winPanel;
@@ -26,6 +28,9 @@ public class GameManager : MonoBehaviour
     public AudioClip bgm;
     private AudioSource audioSource;
 
+    // ⭐ Danh sách map
+    string[] maps = { "Map1", "Map2", "Map3", "Map4", "Map5" };
+
     void Awake()
     {
         Instance = this;
@@ -37,6 +42,7 @@ public class GameManager : MonoBehaviour
         Time.timeScale = 1;
         timeLeft = timeLimit;
         isRunTimer = false;
+
         if (winPanel) winPanel.SetActive(false);
         if (losePanel) losePanel.SetActive(false);
         if (pausePanel) pausePanel.SetActive(false);
@@ -46,11 +52,8 @@ public class GameManager : MonoBehaviour
 
     void Update()
     {
-        // ESC Pause (chỉ khi chưa kết thúc game)
         if (!gameEnded && Input.GetKeyDown(KeyCode.Escape))
-        {
             TogglePause();
-        }
 
         if (!gameEnded && !isPaused && isRunTimer)
         {
@@ -61,21 +64,14 @@ public class GameManager : MonoBehaviour
         HandleInput();
     }
 
-    // ======================
-    // 🎵 BGM
-    // ======================
     void PlayBGM()
     {
         if (bgm == null) return;
-
         audioSource.clip = bgm;
         audioSource.loop = true;
         audioSource.Play();
     }
 
-    // ======================
-    // ⏱ TIMER
-    // ======================
     void RunTimer()
     {
         timeLeft -= Time.deltaTime;
@@ -91,9 +87,6 @@ public class GameManager : MonoBehaviour
             Lose();
     }
 
-    // ======================
-    // 🏆 CHECK WIN
-    // ======================
     void CheckWin()
     {
         if (LevelManager.Instance.currentScore >=
@@ -103,9 +96,6 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    // ======================
-    // 🏆 WIN
-    // ======================
     public void Win()
     {
         if (gameEnded) return;
@@ -124,9 +114,6 @@ public class GameManager : MonoBehaviour
         canPressKey = true;
     }
 
-    // ======================
-    // 💀 LOSE
-    // ======================
     public void Lose()
     {
         if (gameEnded) return;
@@ -138,9 +125,6 @@ public class GameManager : MonoBehaviour
         Time.timeScale = 0;
     }
 
-    // ======================
-    // ⏸ PAUSE
-    // ======================
     void TogglePause()
     {
         isPaused = !isPaused;
@@ -150,82 +134,67 @@ public class GameManager : MonoBehaviour
         Time.timeScale = isPaused ? 0 : 1;
     }
 
-
-    // ======================
-    // 🎮 INPUT
-    // ======================
     void HandleInput()
     {
-        // ===== PAUSE INPUT =====
         if (isPaused && pausePanel.activeSelf)
         {
-            if (Input.GetKeyDown(KeyCode.Return))
-            {
-                TogglePause(); // resume
-            }
-            if (Input.GetKeyDown(KeyCode.R))
-            {
-                Replay();
-            }
+            if (Input.GetKeyDown(KeyCode.Return)) TogglePause();
+            if (Input.GetKeyDown(KeyCode.R)) Replay();
             if (Input.GetKeyDown(KeyCode.Backspace))
             {
                 Time.timeScale = 1;
                 SceneManager.LoadScene("Menu");
             }
-
             return;
         }
 
         if (!gameEnded) return;
 
-        // ===== WIN INPUT =====
         if (winPanel.activeSelf && canPressKey)
         {
-            if (Input.GetKeyDown(KeyCode.Return))
-                LoadNextLevel();
-
+            if (Input.GetKeyDown(KeyCode.Return)) LoadNextLevel();
             if (Input.GetKeyDown(KeyCode.Backspace))
                 SceneManager.LoadScene("Menu");
-            if (Input.GetKeyDown(KeyCode.R))
-            {
-                Replay();
-            }
+            if (Input.GetKeyDown(KeyCode.R)) Replay();
         }
 
-        // ===== LOSE INPUT =====
         if (losePanel.activeSelf)
         {
-            if (Input.GetKeyDown(KeyCode.R))
-            {
-                Replay();
-            }
-
+            if (Input.GetKeyDown(KeyCode.R)) Replay();
             if (Input.GetKeyDown(KeyCode.Backspace))
             {
                 Time.timeScale = 1;
                 SceneManager.LoadScene("Menu");
             }
         }
-
     }
 
-
-    // ======================
-    // 🔁 SCENE CONTROL
-    // ======================
     public void Replay()
     {
         Time.timeScale = 1;
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
 
+    // ⭐ RANDOM MAP KHÔNG TRÙNG MAP HIỆN TẠI
     public void LoadNextLevel()
     {
         Time.timeScale = 1;
 
-        int nextScene = SceneManager.GetActiveScene().buildIndex + 1;
+        string currentMap =
+            SceneManager.GetActiveScene().name;
 
-        if (nextScene < SceneManager.sceneCountInBuildSettings)
-            SceneManager.LoadScene(nextScene);
+        List<string> availableMaps =
+            new List<string>(maps);
+
+        // ❌ bỏ map hiện tại
+        availableMaps.Remove(currentMap);
+
+        // 🎲 random map còn lại
+        string nextMap =
+            availableMaps[
+                Random.Range(0, availableMaps.Count)
+            ];
+
+        SceneManager.LoadScene(nextMap);
     }
 }
