@@ -13,6 +13,9 @@ public class MenuEnterGame : MonoBehaviour
 
     private Vector3 baseScale;
 
+    // ⭐ Danh sách map
+    string[] maps = { "Map1", "Map2", "Map3", "Map4", "Map5" };
+
     void Start()
     {
         if (text != null)
@@ -28,16 +31,16 @@ public class MenuEnterGame : MonoBehaviour
             text.transform.localScale = baseScale * (1f + scaleOffset);
         }
 
-        // ===== Nhấn Enter để sang scene tiếp =====
+        // ===== Nhấn Enter để sang scene random =====
         if (Input.GetKeyDown(KeyCode.Return))
         {
-            LoadNextScene();
+            LoadRandomScene();
         }
     }
 
-    void LoadNextScene()
+    void LoadRandomScene()
     {
-        int currentIndex = SceneManager.GetActiveScene().buildIndex;
-        SceneManager.LoadScene(currentIndex + 1);
+        int rand = Random.Range(0, maps.Length);
+        SceneManager.LoadScene(maps[rand]);
     }
 }
