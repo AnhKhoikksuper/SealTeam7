@@ -15,9 +15,6 @@ public class ItemSpawner : MonoBehaviour
     [Header("Spawn Range X")]
     public float minX = 0f;
     public float maxX = 20f;
-    [Header("Spawn Height Range Y")]
-    public float minRayY = 5f;
-    public float maxRayY = 50f;
 
     [Header("Ground")]
     public LayerMask groundLayer;
@@ -76,66 +73,81 @@ public class ItemSpawner : MonoBehaviour
 
     Vector2 GetValidPos()
     {
-        for (int i = 0; i < 50; i++)
+        for (int i = 0; i < 200; i++)
         {
             float x = Random.Range(minX, maxX);
-            float rayY = Random.Range(minRayY, maxRayY);
+
             RaycastHit2D hit = Physics2D.Raycast(
-                new Vector2(x, rayY),
+                new Vector2(x, 50),
                 Vector2.down,
                 100,
                 groundLayer
             );
 
-        if (!hit) continue;
+            if (!hit) continue;
 
-        Vector2 pos = hit.point + Vector2.up * yOffset;
+            Vector2 pos = hit.point + Vector2.up * yOffset;
 
-        // ===== ❌ Check rìa ground =====
-        bool leftGround = Physics2D.Raycast(
-            pos + Vector2.left * edgeCheckDistance,
-            Vector2.down,
-            1f,
-            groundLayer
-        );
+            // Check rìa
+            bool leftGround = Physics2D.Raycast(
+                pos + Vector2.left * edgeCheckDistance,
+                Vector2.down,
+                1f,
+                groundLayer
+            );
 
-        bool rightGround = Physics2D.Raycast(
-            pos + Vector2.right * edgeCheckDistance,
-            Vector2.down,
-            1f,
-            groundLayer
-        );
+            bool rightGround = Physics2D.Raycast(
+                pos + Vector2.right * edgeCheckDistance,
+                Vector2.down,
+                1f,
+                groundLayer
+            );
 
-        if (!leftGround || !rightGround)
-            continue;
-        // ============================
+            if (!leftGround || !rightGround)
+                continue;
 
-        // ❌ gần Player
-        if (player &&
-            Vector2.Distance(pos, player.position) < minDistanceFromCharacter)
-            continue;
+            if (player &&
+                Vector2.Distance(pos, player.position) < minDistanceFromCharacter)
+                continue;
 
-        // ❌ gần NPC
-        if (NPC &&
-            Vector2.Distance(pos, NPC.position) < minDistanceFromCharacter)
-            continue;
+            if (NPC &&
+                Vector2.Distance(pos, NPC.position) < minDistanceFromCharacter)
+                continue;
 
-        // ❌ gần spawn khác
-        bool tooClose = false;
-        foreach (var p in usedPositions)
-        {
-            if (Vector2.Distance(pos, p) < minDistanceBetweenSpawns)
+            bool tooClose = false;
+            foreach (var p in usedPositions)
             {
-                tooClose = true;
-                break;
+                if (Vector2.Distance(pos, p) < minDistanceBetweenSpawns)
+                {
+                    tooClose = true;
+                    break;
+                }
             }
+
+            if (tooClose) continue;
+
+            return pos;
         }
 
-        if (tooClose) continue;
-
-        return pos;
+        // ⭐ fallback
+        return GetFallbackPos();
     }
+    Vector2 GetFallbackPos()
+    {
+        float x = Random.Range(minX, maxX);
+
+        RaycastHit2D hit = Physics2D.Raycast(
+            new Vector2(x, 50),
+            Vector2.down,
+            100,
+            groundLayer
+        );
+
+        if (hit)
+            return hit.point + Vector2.up * yOffset;
 
         return Vector2.zero;
     }
+
 }
+

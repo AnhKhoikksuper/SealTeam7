@@ -1,24 +1,32 @@
 ﻿using UnityEngine;
 
+[RequireComponent(typeof(Rigidbody2D))]
 public class MoveUpDown2D : MonoBehaviour
 {
-    public float amplitude = 2f;   // Độ cao di chuyển
-    public float speed = 2f;       // Tốc độ
+    public float amplitude = 2f; // độ cao
+    public float speed = 2f;     // tốc độ
 
-    private Vector3 startPos;
+    private Rigidbody2D rb;
+    private Vector2 startPos;
+    private float time;
 
-    void Start()
+    void Awake()
     {
-        startPos = transform.position;
+        rb = GetComponent<Rigidbody2D>();
+        startPos = rb.position;
     }
 
-    void Update()
+    void FixedUpdate()
     {
-        float yOffset = Mathf.Sin(Time.time * speed) * amplitude;
-        transform.position = new Vector3(
+        time += Time.fixedDeltaTime;
+
+        float yOffset = Mathf.Sin(time * speed) * amplitude;
+
+        Vector2 newPos = new Vector2(
             startPos.x,
-            startPos.y + yOffset,
-            startPos.z
+            startPos.y + yOffset
         );
+
+        rb.MovePosition(newPos);
     }
 }
